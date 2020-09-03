@@ -40,4 +40,7 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return repo.findByEmail(email);
     }
+    public User findByEmail(String email){
+        return repo.findByEmail(email);
+    }
 }

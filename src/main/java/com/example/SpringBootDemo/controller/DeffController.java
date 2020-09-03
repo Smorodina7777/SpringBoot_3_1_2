@@ -26,9 +26,4 @@ public class DeffController {
     public String getLoginPage() {
         return "login";
     }
-
-    @GetMapping("/user")
-    public String userPage(){
-        return "user";
-    }
 }
