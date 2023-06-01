@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+  <meta charset="UTF-8">
+  <title>USERS CRUD</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://yastatic.net/jquery/3.3.1/jquery.js"></script>
+  <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+          integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+          crossorigin="anonymous"></script>
+  <style>
+    .custom-navbar {
+      margin-bottom: 20px;
+      background-color: #31373e;
+      height: 45px;
+    }
+
+    .custom-navbar a {
+      color: #82888b;
+    }
+
+    .custom-navbar a:hover {
+      color: #babcbe;
+      text-decoration: none;
+    }
+
+    .email {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .role {
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .padding-left-zero {
+      padding-left: 0;
+    }
+
+    .padding-left-zero a {
+      height: 40px;
+    }
+  </style>
+</head>
+<body>
+<div id="content">
+
+  <table class="datatable">
+    <h2>Список постов</h2>
+
+    <#list postList as post>
+
+    <tr>
+      <td>
+        <h3>
+          ${post.postName}</h3>
+
+        <p> ${post.text}</p>
+        <p class="date">${post.pubDate}</p>
+
+        <a href="/post/edit/${post.id}">
+          <button>Редактировать</button>
+        </a>
+        <br><br>
+      </td>
+    </tr>
+
+  </#list>
+
+  </table>
+  <br><br>
+  <a href="/post/newPost">
+    <button>Добавить пост</button>
+  </a>
+
+</div>
+</body>
+</html>

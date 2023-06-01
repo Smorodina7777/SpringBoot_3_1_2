@@ -1,5 +1,5 @@
 function reloadTable() {
-    fetch('http://localhost:8080/rest/admin/').then(
+    fetch('http://localhost:6060/rest/admin/').then(
         response => {
             response.json().then(
                 data => {
@@ -26,8 +26,34 @@ function reloadTable() {
         }
     )
 }
+function reloadPostTable() {
+    fetch('http://localhost:6060/rest/post/').then(
+        response => {
+            response.json().then(
+                data => {
+                    let temp ="";
+                    data.forEach((p) => {
+                        temp += "<tr >";
+                        temp += "<td >"+ p.id + "</td>";
+                        temp += "<td >"+ p.postName + "</td>";
+                        temp += "<td >"+ p.author + "</td>";
+                        temp += "<td >"+ p.pubDate + "</td>";
+                        temp += "<td >"+ p.pubDescribe + "</td>";
+                        temp += "<td >" +
+                            "    <a class='btn btn-danger' role='button' onmouseover='fillDeletePostModal(" + p.id + ")' data-toggle='modal' data-target='#deletePost'>Delete</a>" +
+                            "    </td>"
+                        temp += "</tr>";
+                    })
+                    // document.getElementById("list").innerHTML = temp;
+                    $("#postsTableHere").empty();
+                    $("#postsTableHere").append(temp);
+                }
+            )
+        }
+    )
+}
 function fillEditModal(userId) {
-    $.get("http://localhost:8080/rest/admin/" + userId, function (userJSON) {
+    $.get("http://localhost:6060/rest/admin/" + userId, function (userJSON) {
         $('#idToEditUser').val(userJSON.id);
         $('#nameToEditUser').val(userJSON.name);
         $('#ageToEditUser').val(userJSON.age);
@@ -45,8 +71,18 @@ function fillEditModal(userId) {
         }
     });
 }
+function fillEditPostModal(postId) {
+    $.get("http://localhost:6060/rest/user/post" + postId, function (postJSON) {
+        $('#idToEditPost').val(postJSON.id);
+        $('#postNameToEditePost').val(postJSON.postName);
+        $('#authorToEditePost').val(postJSON.author);
+        $('#pubDateToEditPost').val(postJSON.pubDate);
+        $('#pubDescribeToEditPost').val(postJSON.pubDescribe);
+
+    });
+}
 function fillDeleteModal(userId) {
-    $.get("http://localhost:8080/rest/admin/" + userId, function (userJSON) {
+    $.get("http://localhost:6060/rest/admin/" + userId, function (userJSON) {
         $('#idToDeleteUser').val(userJSON.id);
         $('#nameToDeleteUser').val(userJSON.name);
         $('#ageToDeleteUser').val(userJSON.age);
@@ -63,13 +99,30 @@ function fillDeleteModal(userId) {
         }
     });
 }
+function fillDeletePostModal(postId) {
+    $.get("http://localhost:6060/rest/admin/post" + postId, function (postJSON) {
+        $('#idToDeletePost').val(postJSON.id);
+        $('#postNameToDeletePost').val(postJSON.postName);
+        $('#authorToDeletePost').val(postJSON.author);
+        $('#pubDateToDeletePost').val(postJSON.pubDate);
+        $('#pubDescribeToDeletePost').val(postJSON.pubDescribe);
+
+    });
+}
 function reloadNewUserTable(){
     $('#newName').val('');
     $('#newAge').val('');
     $('#newEmail').val('');
     $('#newPassword').val('');
+    $('#newConfirmPassword').val('');
     $("#New_ROLE_USER").prop('checked', false);
     $("#New_ROLE_ADMIN").prop('checked', false);
+}
+function reloadNewPostTable(){
+    $('#newPostName').val('');
+    $('#newAuthor').val('');
+    $('#newPubDate').val('');
+    $('#newPubDescribed').val('');
 }
 
 
@@ -81,7 +134,7 @@ $(function () {
             checked.push($(this).val());
         });
         // reloadNewUserTable();
-
+if ($("#newPassword").val() ===($("#newConfirmPassword").val())){
         let user = {
             name : $("#newName").val(),
             age : $("#newAge").val(),
@@ -89,7 +142,7 @@ $(function () {
             password : $("#newPassword").val(),
             role : checked
         };
-        fetch('http://localhost:8080/rest/admin/', {
+        fetch('http://localhost:6060/rest/admin/', {
             method: "POST",
             credentials: 'same-origin',
             body: JSON.stringify(user),
@@ -98,16 +151,16 @@ $(function () {
             }
         });
         reloadTable();
-        reloadNewUserTable();
-        reloadTable()
-    });
+        reloadNewUserTable()
+        //reloadTable()
+    }});
     $('#modalDeleteBtn').on("click", function () {
-        fetch('http://localhost:8080/rest/admin/'+ $('#idToDeleteUser').val(), {
+        fetch('http://localhost:6060/rest/admin/'+ $('#idToDeleteUser').val(), {
             method: "DELETE",
             credentials: 'same-origin',
         });
         reloadTable();
-        reloadTable();
+        //reloadTable();
     });
     $('#modalEditBtn').on("click", function () {
         let checked = [];
@@ -123,7 +176,7 @@ $(function () {
             password : $("#passwordToEditUser").val(),
             role : checked
         };
-        fetch('http://localhost:8080/rest/admin/', {
+        fetch('http://localhost:6060/rest/admin/', {
             method: "PUT",
             credentials: 'same-origin',
             body: JSON.stringify(user),
@@ -132,8 +185,69 @@ $(function () {
             }
         });
         reloadTable();
-        reloadTable();
-        reloadNewUserTable();
+       // reloadTable();
+        //reloadNewUserTable();
     });
 });
 reloadTable();
+$(function () {
+
+    $('#addSubmit').on("click", function () {
+        let checked = [];
+        $('input:checkbox:checked').each(function () {
+            checked.push($(this).val());
+        });
+            let post = {
+                postName : $("#newPostName").val(),
+                author : $("#newAuthor").val(),
+                pubDate : $("#newPubDate").val(),
+                pubDescribe : $("#newPubDescribe").val()
+            };
+            fetch('http://localhost:6060/rest/user/post', {
+                method: "POST",
+                credentials: 'same-origin',
+                body: JSON.stringify(post),
+                headers: {
+                    'content-type': 'application/json'
+                }
+            });
+            reloadPostTable();
+            reloadNewPostTable()
+            //reloadTable()
+        });
+    $('#modalDeleteBtn').on("click", function () {
+        fetch('http://localhost:6060/rest/admin/post'+ $('#idToDeletePost').val(), {
+            method: "DELETE",
+            credentials: 'same-origin',
+        });
+        reloadPostTable();
+        //reloadTable();
+    });
+    $('#modalEditBtn').on("click", function () {
+        let checked = [];
+        $('input:checkbox:checked').each(function () {
+            checked.push($(this).val());
+        });
+
+        let post = {
+            id : $('#idToEditPost').val(),
+            name : $("#postNameToEditPost").val(),
+            age : $("#authorToEditPost").val(),
+            email : $("#pubDateToEditPost").val(),
+            password : $("#pubDescribeToEditPost").val(),
+            role : checked
+        };
+        fetch('http://localhost:6060/rest/admin/', {
+            method: "PUT",
+            credentials: 'same-origin',
+            body: JSON.stringify(post),
+            headers: {
+                'content-type': 'application/json'
+            }
+        });
+        reloadPostTable();
+        // reloadTable();
+        //reloadNewUserTable();
+    });
+});
+reloadPostTable();

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
@@ -17,33 +18,35 @@ public class RestControllerTest {
     UserService userService;
 
     @PostMapping(value = "/")
-    public ResponseEntity<User> create(@RequestBody User user){
+    public ResponseEntity<User> create(@RequestBody User user) {
         userService.save(user);
         System.out.println(user);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+
+
     @GetMapping(value = "/")
-    public ResponseEntity<List<User>> getAll(){
+    public ResponseEntity<List<User>> getAll() {
         List<User> users = userService.listAll();
         return users != null && !users.isEmpty() ? new ResponseEntity<>(users, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<User> getUser(@PathVariable(name= "id") int id){
-        User user = userService.get(id);
-        return user != null ? new ResponseEntity<>(user,HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<User> getUser(@PathVariable(name = "id") int id) {
+        User user = userService.get((long) id);
+        return user != null ? new ResponseEntity<>(user, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping(value = "/")
-    public ResponseEntity<User> updateUser(@RequestBody User user){
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         userService.save(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable(name = "id") int id){
-        userService.delete(id);
+    public ResponseEntity<User> deleteUser(@PathVariable(name = "id") int id) {
+        userService.delete((long) id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

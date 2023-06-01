@@ -1,6 +1,7 @@
 package com.example.SpringBootDemo.config;
 
 import com.example.SpringBootDemo.service.UserService;
+import com.example.SpringBootDemo.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     @Autowired
     private SuccessUserHandler successUserHandler;
 
@@ -48,7 +49,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)
+        auth.userDetailsService(userServiceImpl)
                 .passwordEncoder(NoOpPasswordEncoder.getInstance());
     }
 }
