@@ -22,6 +22,10 @@ public class PostService {
     public List<Post> listAllPosts() {
         return postRepository.findAll();
     }
+    @Transactional
+    public List<Post> listAllUserPosts(Long userId) {
+        return  postRepository.findByUser_Id(userId);
+    }
 
     @Transactional
     public Post get(Long id) {

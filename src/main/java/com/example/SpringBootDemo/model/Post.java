@@ -24,6 +24,7 @@ public class Post {
   private String pubDescribe;
 
   @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "user_id")
   @ToString.Exclude
   private User user;
 

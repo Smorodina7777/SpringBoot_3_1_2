@@ -47,6 +47,7 @@
             height: 40px;
         }
     </style>
+    <script src="../static/js/server.js"></script>
 </head>
 <body>
 
@@ -67,13 +68,18 @@
                 <a sec:authorize="hasAuthority('ROLE_ADMIN')" class='block nav-link' data-toggle='pill' href='#adminPanel'>
                     <p class='text-left text-capitalize'>ADMIN</p>
                 </a>
+                <a sec:authorize="hasAuthority('ROLE_ADMIN')" class='block nav-link' data-toggle='pill' href='#adminPostPanel'>
+                    <p class='text-left text-capitalize'>POSTS</p>
+                </a>
                 <a class='block nav-link active' data-toggle='pill' href='#userPanel'>
                     <p class='text-left text-capitalize'>USER</p>
                 </a>
-                <a  sec:authorize="hasAuthority('ROLE_USER')" class='block nav-link' data-toggle='pill' href='#postPanel'>
-                    <p class='text-left text-capitalize'>POSTS</p>
+                <a sec:authorize="hasAuthority('ROLE_USER')"  class='block nav-link' data-toggle='pill' href='#userPostPanel'>
+                    <p class='text-left text-capitalize'>MY POSTS</p>
                 </a>
-
+                <a sec:authorize="hasAuthority('ROLE_USER')"  class='block nav-link' data-toggle='pill' href='#postPanel'>
+                    <p class='text-left text-capitalize'>READ POSTS</p>
+                </a>
             </div>
         </div>
         <!--    Конец левой навигационной панели    -->
@@ -103,7 +109,7 @@
                                 </tr>
                                 </thead>
                                 <tbody id="usersTableHere">
-                                <div class='modal fade' id="editUser">
+                                <div class='modal fade' id='editUser'>
                                     <div class='modal-dialog modal-dialog-centered'>
                                         <div class='modal-content'>
                                             <input type='hidden' id='idToEditUser'>
@@ -135,10 +141,6 @@
                                                 </div>
                                                 <div class='form-group text-center'>
                                                     <label><b>Role</b></label>
-<!--                                                        <select id='rolesToEditUser' class='form-control' size='2'>-->
-<!--                                                            <option value='1'>ADMIN</option>-->
-<!--                                                            <option value='2'>USER</option>-->
-<!--                                                        </select>-->
                                                     <div>
                                                         <th:block th:each="rol : ${roles}" >
                                                             <label th:for="${rol.name()}" th:text="${rol.name()}"></label>
@@ -283,6 +285,220 @@
                         </table>
                     </div>
                 </div>
+                        <div class="tab-pane" id="userPostPanel">
+                            <h1>Posts</h1>
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li><a class="nav-link active" data-toggle="tab" href="#table-user-posts">My Posts</a></li>
+                                <li><a class="nav-link" data-toggle="tab" href="#add-post">New Post</a></li>
+                            </ul>
+                            <div class="tab-content container-fluid">
+                                <div role="tabpanel" class="tab-pane active" id="table-user-posts">
+                                <br>
+                                <h5>Posts</h5>
+                                <br>
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Author</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Describe</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="userPostsTableHere">
+                                    <div class='modal fade' id='editPost'>
+                                        <div class='modal-dialog modal-dialog-centered'>
+                                            <div class='modal-content'>
+                                                <input type='hidden' id='idToEditPost'>
+                                                <div class='modal-header'>
+                                                    <h5>Edit post</h5>
+                                                    <button type='button' class='close' data-dismiss='modal'
+                                                            aria-label='Close'><span aria-hidden='true'>&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class='modal-body col-8 offset-2'>
+                                                    <div class='form-group text-center'>
+                                                        <label for="postNameToEditPost"><b>Name</b></label>
+                                                        <input type='text' id='postNameToEditPost' class='form-control'
+                                                               required='required'>
+                                                    </div>
+                                                    <div class='form-group text-center'>
+                                                        <label for="authorToEditPost"><b>Author</b></label>
+                                                        <input type='text' id='authorToEditPost' class='form-control'
+                                                               required='required'>
+                                                    </div>
+                                                    <div class='form-group text-center'>
+                                                        <label for="pubDateToEditPost"><b>Date</b></label>
+                                                        <input type='date' id='pubDateToEditPost' class='form-control'
+                                                               required='required'>
+                                                    </div>
+                                                    <div class='form-group text-center'>
+                                                        <label for="pubDescribeToEditPost"><b>Describe</b></label>
+                                                        <input type='text' id='pubDescribeToEditPost' class='form-control'>
+                                                    </div>
+                                                    <div class='form-group text-center'>
+                                                        <label><b>UserId</b></label>
+                                                        <input type='text' id='userIdToEditPost' class='form-control'>
+                                                    </div>
+                                                </div>
+
+                                            <div class='modal-footer'>
+                                                <button type='button' class='btn btn-secondary' data-dismiss='modal'>
+                                                    Close
+                                                </button>
+                                                <button type='submit' id='modalPostEditBtn' class='btn btn-primary success'
+                                                        data-dismiss='modal'>Edit
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div class='modal fade' id='deleteUserPost'>
+                                            <div class='modal-dialog modal-dialog-centered'>
+                                                <div class='modal-content'>
+                                                    <div class='modal-header'>
+                                                        <h5>Delete</h5>
+                                                        <button type='button' class='close' data-dismiss='modal'
+                                                                aria-label='Close'><span aria-hidden='true'>&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class='modal-body col-8 offset-2'>
+                                                        <div class='form-group text-center'>
+                                                            <label><b>Id</b></label>
+                                                            <input type='text' id='idToDeleteUserPost' class='form-control'
+                                                                   readonly='readonly'>
+                                                        </div>
+                                                        <div class='form-group text-center'>
+                                                            <label><b>Name</b></label>
+                                                            <input type='text' id='postNameToDeleteUserPost' class='form-control'
+                                                                   readonly='readonly'>
+                                                        </div>
+                                                        <div class='form-group text-center'>
+                                                            <label><b>Author</b></label>
+                                                            <input type='text' id='authorToDeleteUserPost' class='form-control'
+                                                                   readonly='readonly'>
+                                                        </div>
+                                                        <div class='form-group text-center'>
+                                                            <label><b>Date</b></label>
+                                                            <input type='date' id='pubDateToDeleteUserPost' class='form-control'
+                                                                   readonly='readonly'>
+                                                        </div>
+                                                        <div class='form-group text-center'>
+                                                            <label><b>Describe</b></label>
+                                                            <input type='text' id='pubDescribeToDeleteUserPost' class='form-control'
+                                                                   readonly='readonly'>
+                                                        </div>
+                                                    </div>
+                                                    <div class='modal-footer'>
+                                                        <button type='button' class='btn btn-secondary'
+                                                                data-dismiss='modal'>Close
+                                                        </button>
+                                                        <button type='submit' id='modalUserDeletePostBtn'
+                                                                class='btn btn-primary success'
+                                                                data-dismiss='modal'>Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <div role="tabpanel" class="tab-pane" id="add-post">
+                                    <br>
+                                    <h5>Add new post</h5>
+                                    <br>
+                                    <div id="dropEmptyPost" class="col-3 offset-4">
+                                        <div class='form-group text-center'>
+                                            <label><b>Name</b></label>
+                                            <input id='newPostName' type='text' class='form-control' placeholder='Name' required='required'>
+                                        </div>
+                                        <div class='form-group text-center'>
+                                            <label><b>Describe</b></label>
+                                            <input id='newPubDescribe' type='text' class='form-control' placeholder='Describe' required='required'>
+                                        </div>
+                                        <div class="form-group text-center">
+                                            <button id='addPostSubmit' type='submit' class='btn btn-success btn-lg'>Add new post</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                <div class="tab-pane" id="adminPostPanel">
+                    <h1>Posts</h1>
+                   <br>
+                    <div class="container-fluid">
+                            <br>
+                            <h5>Posts</h5>
+                            <br>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Author</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Describe</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody id="adminPostsTableHere">
+                                <div class='modal fade' id='deleteAdminPost'>
+                                    <div class='modal-dialog modal-dialog-centered'>
+                                        <div class='modal-content'>
+                                            <div class='modal-header'>
+                                                <h5>Delete</h5>
+                                                <button type='button' class='close' data-dismiss='modal'
+                                                        aria-label='Close'><span aria-hidden='true'>&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class='modal-body col-8 offset-2'>
+                                                <div class='form-group text-center'>
+                                                    <label><b>Id</b></label>
+                                                    <input type='text' id='idToDeletePost' class='form-control'
+                                                           readonly='readonly'>
+                                                </div>
+                                                <div class='form-group text-center'>
+                                                    <label><b>Name</b></label>
+                                                    <input type='text' id='postNameToDeletePost' class='form-control'
+                                                           readonly='readonly'>
+                                                </div>
+                                                <div class='form-group text-center'>
+                                                    <label><b>Author</b></label>
+                                                    <input type='text' id='authorToDeletePost' class='form-control'
+                                                           readonly='readonly'>
+                                                </div>
+                                                <div class='form-group text-center'>
+                                                    <label><b>Date</b></label>
+                                                    <input type='date' id='pubDateToDeletePost' class='form-control'
+                                                           readonly='readonly'>
+                                                </div>
+                                                <div class='form-group text-center'>
+                                                    <label><b>Describe</b></label>
+                                                    <input type='text' id='pubDescribeToDeletePost' class='form-control'
+                                                           readonly='readonly'>
+                                                </div>
+
+                                            </div>
+                                            <div class='modal-footer'>
+                                                <button type='button' class='btn btn-secondary'
+                                                        data-dismiss='modal'>Close
+                                                </button>
+                                                <button type='submit' id='modalAdminDeletePostBtn'
+                                                        class='btn btn-primary success'
+                                                        data-dismiss='modal'>Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </tbody>
+                            </table>
+
+                    </div>
+                </div>
                 <div class="tab-pane" id="postPanel">
                     <div class="tab-content container-fluid">
                         <div  id="table-posts">
@@ -297,11 +513,10 @@
                                     <th scope="col">Author</th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Describe</th>
-                                    <th scope="col">Action</th>
                                 </tr>
                                 </thead>
 
-                                <th:block th:each="post : ${posts}" th:if="$(user.id == post.user.id)">
+                                <th:block th:each="post : ${posts}">
                                     <tr >
 
                                         <td  th:text="${post.id}" />
@@ -309,72 +524,19 @@
                                         <td  th:text="${post.author}" />
                                         <td  th:text="${post.pubDate}" />
                                         <td  th:text="${post.pubDescribe}" />
-                                        <td >
-                                            <a class='btn btn-info' role='button' onmouseover='fillEditPostModal("post.id")' data-toggle='modal' data-target='#editPost'>Edit</a>
 
-                                        </td>
                                     </tr>
                                 </th:block>
-                                <tbody id="postsTableHere">
-                                <div class='modal fade' id="editPost">
-                                    <div class='modal-dialog modal-dialog-centered'>
-                                        <div class='modal-content'>
-                                            <input type='hidden' id='idToEditPost'>
-                                            <div class='modal-header'>
-                                                <h5>Edit post</h5>
-                                                <button type='button' class='close' data-dismiss='modal'
-                                                        aria-label='Close'><span aria-hidden='true'>&times;</span>
-                                                </button>
-                                            </div>
-                                            <form action="#"  th:object="${post}" method="post">
-                                                 <span th:text="${post.id}"/>
-                                                <input type="hidden" name="id" id="id" th:field="*{id}">
-                                            <div class='modal-body col-8 offset-2'>
-                                                <div class='form-group text-center'>
-                                                    <label><b>Name</b></label>
-                                                    <input type='text' id='postNameToEditPost' th:field="*{postName}" class='form-control'
-                                                           required='required'>
-                                                </div>
-                                                <div class='form-group text-center'>
-                                                    <label><b>Author</b></label>
-                                                    <input type='text' id='authorToEditPost' class='form-control'
-                                                           required='required'>
-                                                </div>
-                                                <div class='form-group text-center'>
-                                                    <label><b>Date</b></label>
-                                                    <input type='date' id='pubDateToEditPost' class='form-control'
-                                                           required='required'>
-                                                </div>
-                                                <div class='form-group text-center'>
-                                                    <label><b>Describe</b></label>
-                                                    <input type='text' id='pubDescribeToEditPost' class='form-control'>
-                                                </div>
-                                            </div>
-                                            </form>
-                                            <div class='modal-footer'>
-                                                <button type='button' class='btn btn-secondary' data-dismiss='modal'>
-                                                    Close
-                                                </button>
-                                                <button type='submit' id='modalPostEditBtn' class='btn btn-primary success'
-                                                        data-dismiss='modal'>Edit
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </tbody>
+
                         </table>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
-
 <script src="js/server.js"></script>
-
 
 </div>
 </body>
