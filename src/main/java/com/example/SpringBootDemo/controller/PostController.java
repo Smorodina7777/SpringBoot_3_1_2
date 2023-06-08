@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "rest/user")
 @AllArgsConstructor
 public class PostController {
 
@@ -52,6 +52,7 @@ public class PostController {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         post.setUser(user);
         post.setPubDate(LocalDate.now());
+        post.setAuthor(user.getName());
         postService.save(post);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

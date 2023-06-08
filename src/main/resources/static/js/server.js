@@ -51,7 +51,7 @@ function reloadAdminPostTable() {
     )
 }
 function reloadUserPostTable() {
-    fetch('http://localhost:6060/user/post/').then(
+    fetch('http://localhost:6060/rest/user/post/').then(
         response => {
             response.json().then(
                 data => {
@@ -97,10 +97,10 @@ function fillEditModal(userId) {
     });
 }
 function fillPostEditModal(postId) {
-    $.get("http://localhost:6060/user/post/" + postId, function (postJSON) {
+    $.get("http://localhost:6060/rest/user/post/" + postId, function (postJSON) {
         $('#idToEditPost').val(postJSON.id);
-        $('#postNameToEditePost').val(postJSON.postName);
-        $('#authorToEditePost').val(postJSON.author);
+        $('#postNameToEditPost').val(postJSON.postName);
+        $('#authorToEditPost').val(postJSON.author);
         $('#pubDateToEditPost').val(postJSON.pubDate);
         $('#pubDescribeToEditPost').val(postJSON.pubDescribe);
         $('#userIdToEditPost').val(postJSON.user_id);
@@ -137,7 +137,7 @@ function fillAdminPostDeleteModal(postId) {
     });
 }
 function fillUserPostDeleteModal(postId) {
-    $.get("http://localhost:6060/user/post/" + postId, function (postJSON) {
+    $.get("http://localhost:6060/rest/user/post/" + postId, function (postJSON) {
         $('#idToDeleteUserPost').val(postJSON.id);
         $('#postNameToDeleteUserPost').val(postJSON.postName);
         $('#authorToDeleteUserPost').val(postJSON.author);
@@ -227,7 +227,7 @@ $(function () {
         }).then(r => reloadAdminPostTable());
     });
     $('#modalUserDeletePostBtn').on("click", function () {
-        fetch('http://localhost:6060/user/post/' + $('#idToDeleteUserPost').val(), {
+        fetch('http://localhost:6060/rest/user/post/' + $('#idToDeleteUserPost').val(), {
             method: "DELETE",
             credentials: 'same-origin',
         }).then(r => reloadUserPostTable());
@@ -270,7 +270,7 @@ $(function () {
             pubDescribe: $("#pubDescribeToEditPost").val(),
             user_id: $("#newUserId").val()
         };
-        fetch('http://localhost:6060/user/post/', {
+        fetch('http://localhost:6060/rest/user/post/', {
             method: "PUT",
             credentials: 'same-origin',
             body: JSON.stringify(post),
